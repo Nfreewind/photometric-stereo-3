@@ -1,4 +1,4 @@
-#include "ply.h"
+#include "ply.hpp"
 #include <iostream>
 #include <fstream>
 #include <opencv2\highgui\highgui.hpp>

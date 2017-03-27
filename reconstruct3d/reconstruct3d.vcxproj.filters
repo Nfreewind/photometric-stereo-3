@@ -29,13 +29,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ply.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="getopt.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="depth.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="getopt.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

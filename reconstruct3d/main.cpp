@@ -2,8 +2,8 @@
 #include <fstream>
 #include <opencv2\core\core.hpp>
 #include <opencv2\highgui\highgui.hpp>
-#include "getopt.h"
-#include "ply.h"
+#include "getopt.hpp"
+#include "ply.hpp"
 #include "depth.hpp"
 
 // macro: handling return situation

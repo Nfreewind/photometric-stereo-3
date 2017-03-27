@@ -79,8 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="depth.hpp" />
-    <ClInclude Include="getopt.h" />
-    <ClInclude Include="ply.h" />
+    <ClInclude Include="getopt.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
