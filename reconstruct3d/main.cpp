@@ -4,6 +4,7 @@
 #include <opencv2\highgui\highgui.hpp>
 #include "getopt.h"
 #include "ply.h"
+#include "depth.hpp"
 
 // macro: handling return situation
 #define ERROR		(1)
@@ -26,7 +27,6 @@ using namespace cv;
 // prototypes
 void plot(string name, InputArray& matrix);
 void calcualte_normal(vector<pair<Vec3f, Mat>>& data, OutputArray normal, OutputArray albedo);
-void calculate_depth(InputArray normal, OutputArray depth);
 
 /*
  * main
@@ -172,48 +172,9 @@ void calcualte_normal(vector<pair<Vec3f, Mat>>& data, OutputArray _normal, Outpu
 
 			if (albedo_val > eps) { // floating point inaccuracy
 				normal.at<Vec3f>(i, j) = Mat(b / albedo_val);	// N = b / |b|
-				albedo.at<float>(r_idx + j) = albedo_val;			// A = |b|
+				albedo.at<float>(r_idx + j) = albedo_val;		// A = |b|
 			}
 		}
 	}
 }
 
-/*
- * surface reconstruct from normal vectors
- */
-void calculate_depth(InputArray _normal, OutputArray _depth) {
-	// split channels
-	vector<Mat> normals;
-	split(_normal, normals);
-
-	// diff
-	Mat n2, n1;
-	divide(normals[0], normals[2], n2); // df/dx, aka `u`
-	divide(normals[1], normals[2], n1); // df/dy, aka `v`
-
-	n2 = -n2;
-	n1 = -n1;
-
-	//// sanity check
-	//const int trim_row = n1.rows - 1;
-	//const int trim_col = n2.cols - 1;
-	//auto z_dx_dy = n2(Rect(0, 1, trim_col, trim_row)) - n2(Rect(0, 0, trim_col, trim_row));
-	//auto z_dy_dx = n1(Rect(1, 0, trim_col, trim_row)) - n1(Rect(0, 0, trim_col, trim_row));
-
-	//plot("sanity", z_dx_dy - z_dy_dx);
-
-	// integral for depths
-	const auto ctr_h = n1.rows >> 1;
-	const auto ctr_w = n2.cols >> 1;
-
-
-	for (int i = 1; i < n1.rows; i++) {
-		for (int j = 1; j < n1.cols; j++) {
-			n1.at<float>(i, j) += n1.at<float>(i - 1, j);
-			n2.at<float>(i, j) += n2.at<float>(i, j - 1);
-		}
-	}
-
-	Mat depth = n1 + n2;
-	depth.copyTo(_depth);
-}

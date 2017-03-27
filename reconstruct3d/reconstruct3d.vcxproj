@@ -72,11 +72,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="depth.cpp" />
     <ClCompile Include="getopt.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ply.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="depth.hpp" />
     <ClInclude Include="getopt.h" />
     <ClInclude Include="ply.h" />
   </ItemGroup>
