@@ -1,10 +1,7 @@
 #include "ply.h"
 #include <iostream>
 #include <fstream>
-#include <opencv2\imgproc\imgproc.hpp>
 #include <opencv2\highgui\highgui.hpp>
-
-#define AT(p, i)	((unsigned int)((*p)[i]))	// access value inside Vec* type, and convert to numbeic type to output
 
 using namespace std;
 using namespace cv;
@@ -12,8 +9,13 @@ using namespace cv;
 /*
  * write Z data to ply
  */
-bool to_ply(string filename, InputArray source)
+bool to_ply(string filename, InputArray _depth, InputArray _color)
 {
+	assert(_depth.rows() == _color.rows());
+	assert(_depth.cols() == _color.cols());
+	assert(_depth.type() == CV_32FC1);
+	assert(_color.type() == CV_32FC1);
+
 	// open file
 	ofstream stream(filename);
 	if (!stream.is_open()) {
@@ -21,17 +23,21 @@ bool to_ply(string filename, InputArray source)
 		return false;
 	}
 
-	// retrieve image
-	Mat mat = source.getMat();
-	if (mat.empty()) {
+	// retrieve depth map
+	Mat depth = _depth.getMat();
+	if (depth.empty()) {
 		cerr << "empty matrix" << endl;
 		return false;
 	}
 
+	// retrieve color map & normzlize
+	Mat color;
+	normalize(_color, color, 0, 255, NORM_MINMAX);
+
 	// write ply header
 	stream << "ply" << endl;
 	stream << "format ascii 1.0" << endl;
-	stream << "element vertex " << (mat.rows * mat.cols) << endl;
+	stream << "element vertex " << countNonZero(color) << endl;
 	stream << "property float x" << endl;
 	stream << "property float y" << endl;
 	stream << "property float z" << endl;
@@ -39,23 +45,14 @@ bool to_ply(string filename, InputArray source)
 	stream << "property uchar green" << endl;
 	stream << "property uchar blue" << endl;
 	stream << "end_header" << endl;
-
-	// type casting
-	Mat gray;
-	Mat data;
-	mat.convertTo(gray, CV_8UC1);
-	mat.convertTo(data, CV_32FC1);
-
-	// apply color map
-	Mat colored;
-	applyColorMap(mat, colored, COLORMAP_COOL);
-
+	
 	// write data
-	float *pZ = (float*)data.datastart;		// pointer access is much faster than Mat::at<>()
-	Vec3b *pC = (Vec3b*)colored.datastart;
-	for (int i = 0; i < mat.rows; i++) {
-		for (int j = 0; j < mat.cols; j++, pZ++, pC++) {
-			stream << i << " " << j << " " << (*pZ) << " " << AT(pC, 0) << " " << AT(pC, 1) << " " << AT(pC, 2) << endl;
+	for (int i = 0; i < depth.rows; i++) {
+		for (int j = 0; j < depth.cols; j++) {
+			if (color.at<float>(i, j) > 0) {
+				int c = color.at<float>(i, j);
+				stream << i << " " << j << " " << depth.at<float>(i, j) << " " << c << " " << c << " " << c << endl;
+			}
 		}
 	}
 

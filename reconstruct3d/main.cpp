@@ -118,6 +118,9 @@ int main(const int argc, char* const argv[]) {
 		plot("depth", depth);
 	}
 
+	// save to ply
+	to_ply(filename_output, depth, albedo);
+
 	// return
 	if (should_show_result) {
 		clog << "process finished. press any key to continue." << endl;

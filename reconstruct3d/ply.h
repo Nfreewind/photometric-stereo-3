@@ -3,6 +3,6 @@
 
 #include <opencv2/core/core.hpp>
 
-bool to_ply(std::string filename, cv::InputArray source);
+bool to_ply(std::string filename, cv::InputArray depth, cv::InputArray color);
 
 #endif // !__PLY_H
