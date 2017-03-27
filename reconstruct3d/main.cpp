@@ -16,10 +16,6 @@
 #define RETURN(x)	{return x;}
 #endif // _DEBUG
 
-//// macro: accelerate accessing cv::mat<float>
-//#define AT_F(A, i)		(((float*)A.data)[(i)])
-//#define AT_F2D(A, i, j)	(((float*)A.data)[(i)*(A.cols)+(j)])
-
 // namespace utilize
 using namespace std;
 using namespace cv;
@@ -108,6 +104,16 @@ int main(const int argc, char* const argv[]) {
 	Mat depth;
 	calculate_depth(normal, depth);
 
+	// refine dpeth map
+	for (int i = 0; i < depth.rows; i++) {
+		for (int j = 0; j < depth.cols; j++) {
+			if (albedo.at<float>(i, j) == 0) {
+				depth.at<float>(i, j) = 0;
+			}
+		}
+	}
+
+	// display depth map
 	if (should_show_result) {
 		plot("depth", depth);
 	}
