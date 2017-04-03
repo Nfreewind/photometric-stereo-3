@@ -23,6 +23,6 @@ reconstruct3d.exe [options] <path_to_data_folder>
 - Visual Studio 2015 (C++14 std.)
 - OpenCV 3.1.0 x64
 
-# Environment Variable
+## Environment Variable
 
 - `%OpenCV310%`: path to OpenCV 3.1.0 build directory
