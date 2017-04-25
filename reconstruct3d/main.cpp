@@ -152,7 +152,9 @@ void calcualte_normal(vector<pair<Vec3f, Mat>>& data, OutputArray _normal, Outpu
 	// build light source vector S
 	Mat S(n, 3, CV_32FC1);
 	for (int i = 0; i < n; i++) {
-		S.row(i) = data[i].first;
+		S.at<float>(i, 0) = data[i].first[0];
+		S.at<float>(i, 1) = data[i].first[1];
+		S.at<float>(i, 2) = data[i].first[2];
 	}
 
 	Mat S_sol;
